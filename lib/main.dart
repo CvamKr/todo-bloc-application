@@ -5,12 +5,18 @@ import 'package:todo_app_bloc/pages/todo_list_page.dart';
 import 'package:todo_app_bloc/repositories/todo_repository.dart';
 
 import 'blocs/todo_bloc.dart';
+import 'blocs/todos_bloc/todos_bloc.dart';
+import 'blocs/todos_bloc/todos_event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final TodoRepository todoRepository = TodoRepository();
   await todoRepository.init();
-  runApp(MyApp(todoRepository));
+  runApp(BlocProvider(
+    create: (context) =>
+        TodosBloc(todoRepository: todoRepository)..add(LoadTodos()),
+    child: MyApp(todoRepository),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,11 +32,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: BlocProvider(
-        create: (context) =>
-            TodoBloc(todoRepository: todoRepository)..add(LoadTodos()),
-        child: TodoListPage(),
-      ),
+      home: TodoListPage(),
+
+      // BlocProvider(
+      //   create: (context) =>
+      //       // TodoBloc(todoRepository: todoRepository)..add(LoadTodos()),
+      //       TodosBloc(todoRepository: todoRepository)..add(LoadTodos()),
+      //   child: TodoListPage(),
+      // ),
     );
   }
 }

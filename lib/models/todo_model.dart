@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-class Todo extends Equatable {
+class Todo {
   int id;
   String title;
   bool isCompleted;
@@ -40,5 +39,14 @@ class Todo extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, title, isCompleted];
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Todo &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          title == other.title &&
+          isCompleted == other.isCompleted;
+
+  @override
+  int get hashCode => id.hashCode ^ title.hashCode ^ isCompleted.hashCode;
 }

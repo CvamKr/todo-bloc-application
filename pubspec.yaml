@@ -38,7 +38,8 @@ dependencies:
   bloc:
   flutter_bloc:
   shared_preferences:
-  equatable:
+  mockito:
+  bloc_test:
 
 dev_dependencies:
   flutter_test:

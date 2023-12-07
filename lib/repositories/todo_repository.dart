@@ -17,10 +17,11 @@ class TodoRepository {
 
   Future<List<Todo>> fetchTodos() async {
     final todoList = _preferences.getStringList('todos') ?? [];
-    return todoList
+    _todos = todoList
         .map((json) =>
             Todo.fromJson(Map<String, dynamic>.from(jsonDecode(json))))
         .toList();
+    return _todos;
   }
 
   Future<void> saveTodos() async {
@@ -50,5 +51,9 @@ class TodoRepository {
   Future<void> deleteTodo(int id) async {
     _todos.removeWhere((todo) => todo.id == id);
     await saveTodos();
+  }
+
+  void setPreferencesForTesting(SharedPreferences preferences) {
+    _preferences = preferences;
   }
 }
