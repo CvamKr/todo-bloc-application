@@ -1,3 +1,26 @@
+# Setup and Run Instructions
+
+1. **Clone the Repository:**
+    ```bash
+    git clone <repository_url>
+    ```
+
+2. **Navigate to the Project Directory:**
+    ```bash
+    cd todo_app_flutter_bloc
+    ```
+
+3. **Install Dependencies:**
+    ```bash
+    flutter pub get
+    ```
+
+4. **Run the App:**
+    ```bash
+    flutter run
+    ```
+
+
 # Implementation and Architecture
 
 ## Overview
