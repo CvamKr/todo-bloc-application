@@ -102,16 +102,100 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<UpdateTodo>((event, emit) async {
       if (state is Loaded) {
         final currentState = state as Loaded;
-        await todoRepository.updateTodo(event.updatedTodo);
-        final index = currentState.todos
-            .indexWhere((todo) => todo.id == event.updatedTodo.id);
-        if (index != -1) {
-          currentState.todos[index] = event.updatedTodo;
-        }
+        // await todoRepository.updateTodo(event.todoId);
+        // final index = currentState.todos
+        //     .indexWhere((todo) => todo.id == event.updatedTodo.id);
+        // if (index != -1) {
+        //   currentState.todos[index] = event.updatedTodo;
+        // }
 
-        final updatedTodos = List<Todo>.from(currentState.todos);
+        // final updatedTodos = List<Todo>.from(currentState.todos)
+        //   ..[index] = event.updatedTodo;
+
+        final updatedTodos = currentState.todos.map((todo) {
+          return todo.id == event.todoId
+              ? todo.copyWith(isCompleted: !todo.isCompleted)
+              : todo;
+        }).toList();
         emit(Loaded(updatedTodos));
+        // emit(currentState.copyWith(todos: updatedTodos));
       }
+
+      // if (state is Loaded) {
+      //   final currentState = state as Loaded;
+      //   await todoRepository.updateTodo(event.updatedTodo);
+      //   // final index = currentState.todos
+      //   //     .indexWhere((todo) => todo.id == event.updatedTodo.id);
+      //   // if (index != -1) {
+      //   //   currentState.todos[index];
+      //   // }
+      //   final updatedTodos = currentState.todos.map((todo) {
+      //     return todo.id == event.updatedTodo.id
+      //         ? todo.copyWith(isCompleted: !todo.isCompleted)
+      //         : todo;
+      //   }).toList();
+
+      //   // final updatedTodos = List<Todo>.from(currentState.todos)
+      //   //   ..[index] = event.updatedTodo;
+
+      //   final updatedTodos = currentState.todos.map((todo) {
+      //     return todo.id == event.todoId
+      //         ? todo.copyWith(isCompleted: !todo.isCompleted)
+      //         : todo;
+      //   }).toList();
+      //   emit(Loaded(updatedTodos));
+      //   // emit(currentState.copyWith(todos: updatedTodos));
+      // }
+    });
+
+    on<EditTodo>((event, emit) async {
+      if (state is Loaded) {
+        final currentState = state as Loaded;
+        // await todoRepository.updateTodo(event.todoId);
+        // final index = currentState.todos
+        //     .indexWhere((todo) => todo.id == event.updatedTodo.id);
+        // if (index != -1) {
+        //   currentState.todos[index] = event.updatedTodo;
+        // }
+
+        // final updatedTodos = List<Todo>.from(currentState.todos)
+        //   ..[index] = event.updatedTodo;
+
+        final updatedTodos = currentState.todos.map((todo) {
+          return todo.id == event.todoId
+              ? todo.copyWith(title: event.editedTodo.title)
+              : todo;
+        }).toList();
+
+        emit(Loaded(updatedTodos));
+        // emit(currentState.copyWith(todos: updatedTodos));
+      }
+
+      // if (state is Loaded) {
+      //   final currentState = state as Loaded;
+      //   await todoRepository.updateTodo(event.updatedTodo);
+      //   // final index = currentState.todos
+      //   //     .indexWhere((todo) => todo.id == event.updatedTodo.id);
+      //   // if (index != -1) {
+      //   //   currentState.todos[index];
+      //   // }
+      //   final updatedTodos = currentState.todos.map((todo) {
+      //     return todo.id == event.updatedTodo.id
+      //         ? todo.copyWith(isCompleted: !todo.isCompleted)
+      //         : todo;
+      //   }).toList();
+
+      //   // final updatedTodos = List<Todo>.from(currentState.todos)
+      //   //   ..[index] = event.updatedTodo;
+
+      //   final updatedTodos = currentState.todos.map((todo) {
+      //     return todo.id == event.todoId
+      //         ? todo.copyWith(isCompleted: !todo.isCompleted)
+      //         : todo;
+      //   }).toList();
+      //   emit(Loaded(updatedTodos));
+      //   // emit(currentState.copyWith(todos: updatedTodos));
+      // }
     });
   }
 }

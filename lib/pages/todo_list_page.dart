@@ -35,7 +35,8 @@ class TodoListPage extends StatelessWidget {
 
                     itemBuilder: (context, index) {
                       final Todo todo = state.todos[index];
-                      return TodoCard(todo: todo);
+                      // return TodoCard(todo: todo);
+                      return buildTodoCard(todo, context, todoBloc);
                     },
                   );
           } else if (state is Error) {
@@ -46,13 +47,98 @@ class TodoListPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showAddTodoDialog(
-            Todo(id: DateTime.now().millisecondsSinceEpoch),
-            context,
-          );
+          _showAddTodoDialog(Todo(id: DateTime.now().millisecondsSinceEpoch),
+              context, todoBloc);
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  buildTodoCard(Todo todo, context, TodoBloc todoBloc) {
+    return Column(
+      children: [
+        ListTile(
+          title: Row(
+            children: [
+              Expanded(child: Text(todo.id.toString())),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  // todo.title = "f";
+                  Todo todo = Todo(title: 'a');
+                  todoBloc.add(EditTodo(todo.id, todo));
+                },
+              ),
+            ],
+          ),
+          subtitle: Text(todo.title),
+          leading: Checkbox(
+            value: todo.isCompleted,
+            // value: false,
+
+            onChanged: (value) {
+              // todo.isCompleted = value!;
+              // context.read<TodoBloc>().add(UpdateTodo(todo.id));
+              todoBloc.add(UpdateTodo(todo.id));
+            },
+            // checkColor: todo.isCompleted ? Colors.green : Colors.grey,
+          ),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              context.read<TodoBloc>().add(DeleteTodo(todo.id));
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _showAddTodoDialog(
+      Todo todo, BuildContext context, TodoBloc todoBloc) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Todo'),
+          content: TextField(
+            controller: TextEditingController(text: todo.title),
+            onChanged: (value) {
+              todo.title = value;
+            },
+            decoration: const InputDecoration(hintText: 'Enter todo'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            // todo.title.isEmpty
+            //     ?
+            TextButton(
+              onPressed: () {
+                if (todo.title.isNotEmpty) {
+                  todoBloc.add(AddTodo(todo));
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Add'),
+            )
+            // : TextButton(
+            //     onPressed: () {
+            //       if (todo.title.isNotEmpty) {
+            //         todoBloc.add(UpdateTodo(todo));
+            //         Navigator.of(context).pop();
+            //       }
+            //     },
+            //     child: const Text('Update'),
+            //   ),
+          ],
+        );
+      },
     );
   }
 
@@ -97,91 +183,92 @@ class TodoListPage extends StatelessWidget {
   // }
 }
 
-Future<void> _showAddTodoDialog(Todo todo, BuildContext context) async {
-  return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Add Todo'),
-        content: TextField(
-          controller: TextEditingController(text: todo.title),
-          onChanged: (value) {
-            todo.title = value;
-          },
-          decoration: const InputDecoration(hintText: 'Enter todo'),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Cancel'),
-          ),
-          // todo.title.isEmpty
-          //     ?
-          TextButton(
-            onPressed: () {
-              if (todo.title.isNotEmpty) {
-                context.read<TodoBloc>().add(AddTodo(todo));
-                Navigator.of(context).pop();
-              }
-            },
-            child: const Text('Add'),
-          )
-          // : TextButton(
-          //     onPressed: () {
-          //       if (todo.title.isNotEmpty) {
-          //         todoBloc.add(UpdateTodo(todo));
-          //         Navigator.of(context).pop();
-          //       }
-          //     },
-          //     child: const Text('Update'),
-          //   ),
-        ],
-      );
-    },
-  );
-}
+// Future<void> _showAddTodoDialog(Todo todo, BuildContext context) async {
+//   return showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: const Text('Add Todo'),
+//         content: TextField(
+//           controller: TextEditingController(text: todo.title),
+//           onChanged: (value) {
+//             todo.title = value;
+//           },
+//           decoration: const InputDecoration(hintText: 'Enter todo'),
+//         ),
+//         actions: <Widget>[
+//           TextButton(
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//             },
+//             child: const Text('Cancel'),
+//           ),
+//           // todo.title.isEmpty
+//           //     ?
+//           TextButton(
+//             onPressed: () {
+//               if (todo.title.isNotEmpty) {
+//                 context.read<TodoBloc>().add(AddTodo(todo));
+//                 Navigator.of(context).pop();
+//               }
+//             },
+//             child: const Text('Add'),
+//           )
+//           // : TextButton(
+//           //     onPressed: () {
+//           //       if (todo.title.isNotEmpty) {
+//           //         todoBloc.add(UpdateTodo(todo));
+//           //         Navigator.of(context).pop();
+//           //       }
+//           //     },
+//           //     child: const Text('Update'),
+//           //   ),
+//         ],
+//       );
+//     },
+//   );
+// }
 
-class TodoCard extends StatelessWidget {
-  const TodoCard({
-    super.key,
-    required this.todo,
-  });
+// class TodoCard extends StatelessWidget {
+//   const TodoCard({
+//     super.key,
+//     required this.todo,
+//   });
 
-  final Todo todo;
+//   final Todo todo;
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.edit),
-          onPressed: () {
-            // todoBloc.add(UpdateTodo(todo));
-            _showAddTodoDialog(todo, context);
-          },
-        ),
-        ListTile(
-          title: Text(todo.id.toString()),
-          subtitle: Text(todo.title),
-          leading: Checkbox(
-            value: todo.isCompleted,
-            // value: false,
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         IconButton(
+//           icon: const Icon(Icons.edit),
+//           onPressed: () {
+//             // todoBloc.add(UpdateTodo(todo));
+//             // _showAddTodoDialog(todo, context);
+//           },
+//         ),
+//         ListTile(
+//           title: Text(todo.id.toString()),
+//           subtitle: Text(todo.title),
+//           leading: Checkbox(
+//             value: todo.isCompleted,
+//             // value: false,
 
-            onChanged: (value) {
-              todo.isCompleted = value!;
-              context.read<TodoBloc>().add(UpdateTodo(todo));
-            },
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              context.read<TodoBloc>().add(DeleteTodo(todo.id));
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
+//             onChanged: (value) {
+//               // todo.isCompleted = value!;
+//               context.read<TodoBloc>().add(UpdateTodo(todo.id));
+//             },
+//             // checkColor: todo.isCompleted ? Colors.green : Colors.grey,
+//           ),
+//           trailing: IconButton(
+//             icon: const Icon(Icons.delete),
+//             onPressed: () {
+//               context.read<TodoBloc>().add(DeleteTodo(todo.id));
+//             },
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }

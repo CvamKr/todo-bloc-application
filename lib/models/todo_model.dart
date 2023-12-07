@@ -1,4 +1,5 @@
-class Todo {
+import 'package:equatable/equatable.dart';
+class Todo extends Equatable {
   int id;
   String title;
   bool isCompleted;
@@ -25,4 +26,19 @@ class Todo {
       'isCompleted': isCompleted,
     };
   }
+
+  Todo copyWith({
+    int? id,
+    String? title,
+    bool? isCompleted,
+  }) {
+    return Todo(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, title, isCompleted];
 }

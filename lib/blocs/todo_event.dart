@@ -16,13 +16,31 @@ class AddTodo extends TodoEvent {
   List<Object?> get props => [todo];
 }
 
-class UpdateTodo extends TodoEvent {
-  final Todo updatedTodo;
+// class UpdateTodo extends TodoEvent {
+//   final Todo updatedTodo;
 
-  UpdateTodo(this.updatedTodo);
+//   UpdateTodo(this.updatedTodo);
+//   @override
+//   List<Object?> get props => [updatedTodo];
+// }
+class UpdateTodo extends TodoEvent {
+  final int todoId;
+
+  UpdateTodo(this.todoId);
   @override
-  List<Object?> get props => [updatedTodo];
+  List<Object?> get props => [todoId];
 }
+
+class EditTodo extends TodoEvent {
+  final int todoId;
+  final Todo editedTodo;
+
+  EditTodo(this.todoId, this.editedTodo);
+  @override
+  List<Object?> get props => [todoId, editedTodo];
+}
+
+
 
 class DeleteTodo extends TodoEvent {
   final int id;
