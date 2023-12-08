@@ -1,3 +1,9 @@
+![](https://github.com/CvamKr/todo-bloc-application/assets/34348253/9fdaccdf-417d-475f-b5de-53630208c0f5)
+![](https://github.com/CvamKr/todo-bloc-application/assets/34348253/d201748b-028a-4207-a263-3ccb989bb5ae)
+![](https://github.com/CvamKr/todo-bloc-application/assets/34348253/8a3a66be-4b54-41ac-9e9c-f01cf5873983)
+![](https://github.com/CvamKr/todo-bloc-application/assets/34348253/2b17549f-cdd2-4a95-9d76-c8cef3acf13b)
+![](https://github.com/CvamKr/todo-bloc-application/assets/34348253/459b0c4e-7ef8-4ea4-97d4-f2f7d42c0bca)
+
 # Setup and Run Instructions
 
 1. **Clone the Repository:**
