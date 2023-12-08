@@ -11,8 +11,6 @@ class TodoRepository {
   Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
     _todos = [];
-    //to remove
-    // _preferences.remove('todos');
   }
 
   Future<List<Todo>> fetchTodos() async {
@@ -53,7 +51,4 @@ class TodoRepository {
     await saveTodos();
   }
 
-  void setPreferencesForTesting(SharedPreferences preferences) {
-    _preferences = preferences;
-  }
 }

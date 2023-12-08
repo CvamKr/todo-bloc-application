@@ -35,41 +35,11 @@ abstract class TodosState {
 
 class InitialState extends TodosState {
   InitialState({required List<Todo> todos}) : super(todos: todos);
-
-  // @override
-  // bool operator ==(Object other) =>
-  //     identical(this, other) ||
-  //     other is InitialState &&
-  //         runtimeType == other.runtimeType &&
-  //         todos == other.todos;
-  // @override
-  // int get hashCode => todos.hashCode;
 }
-
-// class LoadedState extends TodosState {
-//   VisibilityFilter filter;
-
-//   LoadedState({required List<Todo> todos, this.filter = VisibilityFilter.all})
-//       : super(todos: todos);
-
-// }
 
 class LoadedState extends TodosState {
   VisibilityFilter filter;
 
   LoadedState({required List<Todo> todos, this.filter = VisibilityFilter.all})
       : super(todos: todos);
-
-  // @override
-  // int get hashCode {
-  //   return todos.hashCode ^ filter.hashCode;
-  // }
-
-  // @override
-  // bool operator ==(Object other) =>
-  //     identical(this, other) ||
-  //     other is LoadedState &&
-  //         runtimeType == other.runtimeType &&
-  //         todos == other.todos &&
-  //         filter == other.filter;
 }

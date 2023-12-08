@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:todo_app_bloc/repositories/todo_repository.dart';
@@ -13,10 +14,9 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
       emit(InitialState(todos: []));
       try {
         final todos = await todoRepository.fetchTodos();
-
         emit(LoadedState(todos: [...todos]));
       } catch (e) {
-        print(e);
+        debugPrint(e.toString());
       }
     });
     on<AddTodo>((event, emit) async {
@@ -25,7 +25,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
         state.todos.add(event.todo);
         emit(LoadedState(todos: state.todos));
       } catch (e) {
-        print(e);
+        debugPrint(e.toString());
       }
     });
     on<UpdateTodo>((event, emit) async {
@@ -36,9 +36,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
       if (index != -1) {
         currentState.todos[index] = event.updatedTodo;
       }
-
       final updatedTodos = List<Todo>.from(currentState.todos);
-
       emit(LoadedState(todos: updatedTodos));
     });
     on<DeleteTodo>((event, emit) async {

@@ -19,7 +19,6 @@ class Todo {
 
   Map<String, dynamic> toJson() {
     return {
-      // 'id': DateTime.now().millisecondsSinceEpoch,
       "id": id,
       'title': title,
       'isCompleted': isCompleted,
@@ -37,16 +36,4 @@ class Todo {
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Todo &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          title == other.title &&
-          isCompleted == other.isCompleted;
-
-  @override
-  int get hashCode => id.hashCode ^ title.hashCode ^ isCompleted.hashCode;
 }
