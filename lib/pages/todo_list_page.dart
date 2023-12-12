@@ -18,6 +18,11 @@ class TodoListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo App'),
+        actions: [
+          IconButton(onPressed: (){
+            todoBloc.add(DeleteSelected());
+          }, icon: Icon(Icons.delete))
+        ],
       ),
       body: BlocListener<TodosBloc, TodosState>(
         listener: (context, state) {
@@ -55,7 +60,8 @@ class TodoListPage extends StatelessWidget {
                             itemCount: filteredTodos.length,
                             itemBuilder: (context, index) {
                               final Todo todo = filteredTodos[index];
-                              return buildTodoCard(todo, context, todoBloc);
+                              return buildTodoCard(
+                                  todo, context, todoBloc, state);
                             },
                           ),
                         ),
@@ -114,39 +120,57 @@ class TodoListPage extends StatelessWidget {
     );
   }
 
-  buildTodoCard(Todo todo, context, TodosBloc todoBloc) {
-    return Column(
-      children: [
-        ListTile(
-          title: Row(
-            children: [
-              Expanded(child: Text(todo.title)),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (c) => AddTodoPage(todo: todo)));
+  buildTodoCard(Todo todo, context, TodosBloc todoBloc, TodosState state) {
+    return InkWell(
+      onLongPress: () {
+        todoBloc.add(SelectForDeletion(todo.id));
+      },
+      child: Container(
+        color: isToDelete(todo, state) ? Colors.grey : Colors.transparent,
+        child: Column(
+          children: [
+            ListTile(
+              title: Row(
+                children: [
+                  Expanded(child: Text(todo.title)),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (c) => AddTodoPage(todo: todo)));
+                    },
+                  ),
+                ],
+              ),
+              leading: Checkbox(
+                value: todo.isCompleted,
+                onChanged: (value) {
+                  Todo editedTodo = todo.copyWith(isCompleted: value);
+                  todoBloc.add(UpdateTodo(editedTodo));
                 },
               ),
-            ],
-          ),
-          leading: Checkbox(
-            value: todo.isCompleted,
-            onChanged: (value) {
-              Todo editedTodo = todo.copyWith(isCompleted: value);
-              todoBloc.add(UpdateTodo(editedTodo));
-            },
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              todoBloc.add(DeleteTodo(todo.id));
-            },
-          ),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  todoBloc.add(DeleteTodo(todo.id));
+                },
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
+  }
+
+  bool isToDelete(Todo todo, TodosState state) {
+    if (state is LoadedState) {
+      if (state.listToDelete.contains(todo.id)) {
+        return true;
+      }
+      return false;
+    }
+    return false;
   }
 }

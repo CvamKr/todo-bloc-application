@@ -11,6 +11,7 @@ class TodoRepository {
   Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
     _todos = [];
+    // _preferences.clear();
   }
 
   Future<List<Todo>> fetchTodos() async {
@@ -51,4 +52,8 @@ class TodoRepository {
     await saveTodos();
   }
 
+  Future<void> deleteMultipleTodos(List<int> ids) async {
+    _todos.removeWhere((todo) => ids.contains(todo.id));
+    await saveTodos();
+  }
 }

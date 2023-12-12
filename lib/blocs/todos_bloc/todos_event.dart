@@ -28,6 +28,17 @@ class DeleteTodo extends TodosEvent {
   DeleteTodo(this.id);
 }
 
+class SelectForDeletion extends TodosEvent {
+  final int id;
+
+  SelectForDeletion(this.id);
+}
+class DeleteSelected extends TodosEvent {
+  // final int id;
+
+  DeleteSelected();
+}
+
 enum VisibilityFilter { all, pending, completed }
 
 class FilterTodos extends TodosEvent {

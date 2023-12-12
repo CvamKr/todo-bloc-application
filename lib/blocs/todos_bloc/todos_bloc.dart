@@ -14,7 +14,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
       emit(InitialState(todos: []));
       try {
         final todos = await todoRepository.fetchTodos();
-        emit(LoadedState(todos: [...todos]));
+        emit(LoadedState(todos: [...todos], listToDelete: []));
       } catch (e) {
         debugPrint(e.toString());
       }
@@ -23,7 +23,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
       try {
         await todoRepository.addTodo(event.todo);
         state.todos.add(event.todo);
-        emit(LoadedState(todos: state.todos));
+        emit(LoadedState(todos: state.todos, listToDelete: []));
       } catch (e) {
         debugPrint(e.toString());
       }
@@ -37,22 +37,50 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
         currentState.todos[index] = event.updatedTodo;
       }
       final updatedTodos = List<Todo>.from(currentState.todos);
-      emit(LoadedState(todos: updatedTodos));
+      emit(LoadedState(todos: updatedTodos, listToDelete: []));
     });
     on<DeleteTodo>((event, emit) async {
       await todoRepository.deleteTodo(event.id);
       final updatedTodos = List<Todo>.from(state.todos)
         ..removeWhere((e) => e.id == event.id);
-      emit(LoadedState(todos: updatedTodos));
+      emit(LoadedState(todos: updatedTodos, listToDelete: []));
     });
 
     on<FilterTodos>((event, emit) {
       final currentState = state;
       if (currentState is LoadedState) {
         emit(LoadedState(
-          todos: currentState.todos,
-          filter: event.filter,
-        ));
+            todos: currentState.todos, filter: event.filter, listToDelete: []));
+      }
+    });
+
+    on<SelectForDeletion>((event, emit) {
+      final currentState = state;
+
+      if (currentState is LoadedState) {
+        if (currentState.listToDelete.contains(event.id)) {
+          currentState.listToDelete.remove(event.id);
+        } else {
+          currentState.listToDelete.add(event.id);
+        }
+
+        emit(LoadedState(
+            todos: currentState.todos,
+            listToDelete: currentState.listToDelete));
+      }
+    });
+
+    on<DeleteSelected>((event, emit) async {
+      final currentState = state;
+
+      if (currentState is LoadedState) {
+        await todoRepository.deleteMultipleTodos(currentState.listToDelete);
+
+        currentState.todos
+            .removeWhere((todo) => currentState.listToDelete.contains(todo.id));
+        emit(LoadedState(
+            todos: currentState.todos,
+            listToDelete: currentState.listToDelete));
       }
     });
   }
